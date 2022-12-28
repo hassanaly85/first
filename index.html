@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.25/init.js"></script>
+    <style>
+        #viewdiv {
+            height: 600px;
+            width: 600px;
+        }
+    </style>
+    
+    <title>ARCGIS JS APP</title>
+</head>
+<body>
+    <script>
+        require(["esri/Map",
+                "esri/views/SceneView",
+                "esri/widgets/BasemapToggle",
+                "esri/widgets/BasemapGallery",
+                "esri/layers/FeatureLayer",
+                "esri/widgets/ScaleBar",
+                "esri/widgets/Legend",
+                "esri/widgets/Search"
+            ],
+            function(Map,
+            SceneView,
+                BasemapToggle,
+                BasemapGallery,
+                FeatureLayer,
+                ScaleBar,
+                Legend,
+                Search
+            ) {
+                let map1 = new Map({
+                    basemap: "osm"
+                });
+                let view = new SceneView({
+                    container: "viewdiv",
+                    map: map1,
+                    center: [44.116667, 23.716667],
+                    zoom: 5
+                })
+                let basemapToggle = new BasemapToggle({
+                    view: view,
+                    nextbasemap: "satellite"
+                })
+
+                view.ui.add(basemapToggle, "top-right");
+                let basemapGallery = new BasemapGallery({
+                    view: view,
+                    source: {
+                        portal: {
+                            url: "https://www.arcgis.com",
+                            useVectorBasemaps: true
+                        }
+                    }
+
+                });
+                // view.ui.add(basemapGallery, "top-right");
+                let trailssymbol = {
+                    type: "simpol",
+                    symbol: {
+                        type: "picture-marker",
+                        url: "http://static.arcgis.com/images/Symbols/Shapes/BlackPin1LargeB.png",
+                        width: "18px",
+                        height: "18px"
+                    }
+                }
+                let trails = new FeatureLayer({
+                    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/ArcGIS/rest/services/Trails/FeatureServer/0",
+                    renderer: trailssymbol
+
+                })
+                map1.add(trails);
+                let trailheads = new FeatureLayer({
+                    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/ArcGIS/rest/services/Trailheads/FeatureServer",
+
+                })
+                map1.add(trailheads);
+                let parks = new FeatureLayer({
+                    url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/ArcGIS/rest/services/Parks_and_Open_Space/FeatureServer",
+                })
+                map1.add(parks, 0);
+
+
+                let scalebar = new ScaleBar({
+                    view: view
+                })
+                view.ui.add(scalebar, "bottom-left");
+                let legend = new Legend({
+                    view: view
+                });
+                view.ui.add(legend, "bottom-right");
+                search = new Search({
+                    view: view
+                });
+                view.ui.add(search, "top-left");
+            });
+    </script>
+    <br><br>
+    <div id="viewdiv">my map</div>
+</body>
+</html>
